@@ -1,5 +1,6 @@
 package com.myapi.cirus.resources;
 
+import com.myapi.cirus.domain.Post;
 import com.myapi.cirus.domain.User;
 import com.myapi.cirus.dto.UserDto;
 import com.myapi.cirus.service.UserService;
@@ -32,16 +33,37 @@ public class UserResource {
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
     public ResponseEntity<UserDto> findById(@PathVariable String id) {
         User obj = service.findById(id);
-
         return ResponseEntity.ok().body(new UserDto(obj));
     }
 
-    //Update id especifico
+    //create id especifico
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> insert(@RequestBody UserDto objDto) {
         User obj = service.fromDTO(objDto);
         obj = service.insert(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
         return  ResponseEntity.created(uri).build();
+    }
+
+    //Put editando user
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Void> update(@RequestBody UserDto objDto,@PathVariable String id) {
+        User obj = service.fromDTO(objDto);
+        obj.setId(id);
+        obj = service.update(obj);
+        return ResponseEntity.noContent().build();
+    }
+
+    //Delete, deletando por id
+    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping(value = "/{id}/posts",method = RequestMethod.GET)
+    public ResponseEntity<List<Post>> findPosts(@PathVariable String id) {
+        User obj = service.findById(id);
+        return ResponseEntity.ok().body(obj.getPosts());
     }
 }
