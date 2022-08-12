@@ -1,10 +1,17 @@
 package com.myapi.cirus.domain;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Document(collection = "user")
+
 public class User implements Serializable {
 
+    @Id
     private String id;
     private String name;
     private String email;
